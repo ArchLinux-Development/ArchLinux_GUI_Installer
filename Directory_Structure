@@ -1,0 +1,10 @@
+arch_linux_installer/
+├── main.py
+└── steps/
+    ├── __init__.py
+    ├── desktop_selection.py
+    ├── software_selection.py
+    ├── filesystem_selection.py
+    ├── user_account_setup.py
+    ├── hardware_detection.py
+    ├── bootloader_selection.py
