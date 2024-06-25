@@ -20,6 +20,11 @@ class BootloaderSelection(ttk.Frame):
         button.pack(fill='x', expand=True)
 
     def next_step(self):
-        selected_bootloader = self.bootloader_listbox.get(self.bootloader_listbox.curselection())
+        selected_bootloader_indices = self.bootloader_listbox.curselection()
+        if not selected_bootloader_indices:
+            print("No bootloader selected")
+            return
+        selected_bootloader = self.bootloaders[selected_bootloader_indices[0]]
         print(f"Selected Bootloader: {selected_bootloader}")
-        # Here you would transition to the next step, e.g., swap file configuration
+        from steps.swap_file_configuration import SwapFileConfiguration
+        self.parent.show_step(SwapFileConfiguration)
