@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from steps.desktop_selection import DesktopSelection
 import psutil
 import subprocess
 
@@ -26,30 +25,49 @@ class ArchLinuxInstaller(tk.Tk):
 
         try:
             result = subprocess.run(['lscpu'], capture_output=True, text=True)
-            info['cpu_info'] = result.stdout
+            info['cpu_info'] = self.extract_cpu_model(result.stdout)
         except Exception as e:
             info['cpu_info'] = str(e)
 
         try:
-            result = subprocess.run(['lspci', '-nnk'], capture_output=True, text=True)
-            info['pci_devices'] = result.stdout
+            result = subprocess.run(['lspci'], capture_output=True, text=True)
+            info['gpu_info'] = self.extract_gpu_model(result.stdout)
         except Exception as e:
-            info['pci_devices'] = str(e)
+            info['gpu_info'] = str(e)
 
         try:
             result = subprocess.run(['locale'], capture_output=True, text=True)
-            info['locale'] = result.stdout
+            info['locale'] = result.stdout.strip()
         except Exception as e:
             info['locale'] = str(e)
 
         try:
             result = subprocess.run(['localectl', 'status'], capture_output=True, text=True)
-            info['keyboard_layout'] = result.stdout
+            info['keyboard_layout'] = self.extract_keyboard_layout(result.stdout)
         except Exception as e:
             info['keyboard_layout'] = str(e)
 
         return info
 
+    def extract_cpu_model(self, lscpu_output):
+        for line in lscpu_output.split('\n'):
+            if 'Model name' in line:
+                return line.split(':')[1].strip()
+        return "Unknown CPU"
+
+    def extract_gpu_model(self, lspci_output):
+        for line in lspci_output.split('\n'):
+            if 'VGA compatible controller' in line:
+                return line.split(':')[2].strip()
+        return "Unknown GPU"
+
+    def extract_keyboard_layout(self, localectl_output):
+        for line in localectl_output.split('\n'):
+            if 'Layout' in line:
+                return line.split(':')[1].strip()
+        return "Unknown Layout"
+
 if __name__ == "__main__":
+    from steps.desktop_selection import DesktopSelection
     app = ArchLinuxInstaller()
     app.mainloop()

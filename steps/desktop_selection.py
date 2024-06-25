@@ -12,18 +12,18 @@ class DesktopSelection(ttk.Frame):
         hardware_label = ttk.Label(self, text="Detected Hardware Information:")
         hardware_label.pack(fill='x', expand=True)
 
-        hardware_info = tk.Text(self, height=10)
+        hardware_info = tk.Text(self, height=10, wrap='word')
         hardware_info.pack(fill='both', expand=True)
 
         hardware_details = (
-            f"CPU Cores: {self.parent.hardware_info['cpu']}\n"
+            f"CPU: {self.parent.hardware_info['cpu_info']}\n"
+            f"GPU: {self.parent.hardware_info['gpu_info']}\n"
             f"Memory: {self.parent.hardware_info['memory']} GB\n"
-            f"CPU Info:\n{self.parent.hardware_info['cpu_info']}\n"
-            f"PCI Devices:\n{self.parent.hardware_info['pci_devices']}\n"
-            f"Locale:\n{self.parent.hardware_info['locale']}\n"
-            f"Keyboard Layout:\n{self.parent.hardware_info['keyboard_layout']}\n"
+            f"Locale: {self.parent.hardware_info['locale']}\n"
+            f"Keyboard Layout: {self.parent.hardware_info['keyboard_layout']}\n"
         )
         hardware_info.insert(tk.END, hardware_details)
+        hardware_info.config(state=tk.DISABLED)
 
         # Desktop environment selection
         label = ttk.Label(self, text="Select Desktop Environment:")
