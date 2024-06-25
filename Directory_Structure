@@ -8,3 +8,7 @@ arch_linux_installer/
     ├── user_account_setup.py
     ├── hardware_detection.py
     ├── bootloader_selection.py
+    ├── swap_file_configuration.py
+    ├── additional_software.py
+    ├── search_feature.py
+    ├── installation_process.py
