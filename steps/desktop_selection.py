@@ -21,6 +21,7 @@ class DesktopSelection(ttk.Frame):
             f"Memory: {self.parent.hardware_info['memory']} GB\n"
             f"Locale: {self.parent.hardware_info['locale']}\n"
             f"Keyboard Layout: {self.parent.hardware_info['keyboard_layout']}\n"
+            f"System Type: {self.parent.hardware_info['virtualization']}\n"
         )
         hardware_info.insert(tk.END, hardware_details)
         hardware_info.config(state=tk.DISABLED)

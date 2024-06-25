@@ -47,6 +47,12 @@ class ArchLinuxInstaller(tk.Tk):
         except Exception as e:
             info['keyboard_layout'] = str(e)
 
+        try:
+            result = subprocess.run(['dmidecode', '-s', 'system-product-name'], capture_output=True, text=True)
+            info['virtualization'] = self.detect_virtualization(result.stdout)
+        except Exception as e:
+            info['virtualization'] = str(e)
+
         return info
 
     def extract_cpu_model(self, lscpu_output):
@@ -66,6 +72,12 @@ class ArchLinuxInstaller(tk.Tk):
             if 'Layout' in line:
                 return line.split(':')[1].strip()
         return "Unknown Layout"
+
+    def detect_virtualization(self, dmidecode_output):
+        if 'VirtualBox' in dmidecode_output:
+            return 'VirtualBox'
+        else:
+            return 'Physical Machine'
 
 if __name__ == "__main__":
     from steps.desktop_selection import DesktopSelection
