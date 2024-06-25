@@ -2,6 +2,13 @@ import tkinter as tk
 from tkinter import ttk
 import psutil
 import subprocess
+from desktops import (
+    PlasmaProfile, GnomeProfile, XfceProfile,
+    CinnamonProfile, MateProfile, LxqtProfile,
+    BudgieProfile, I3Profile, DeepinProfile,
+    AwesomeProfile, BspwmProfile, CutefishProfile,
+    EnlightenmentProfile, HyprlandProfile, QtileProfile, SwayProfile
+)
 
 class ArchLinuxInstaller(tk.Tk):
     def __init__(self):
@@ -10,6 +17,8 @@ class ArchLinuxInstaller(tk.Tk):
         self.geometry("800x600")
         self.current_step = None
         self.hardware_info = self.detect_hardware()
+        self.selected_desktop = None
+        self.selected_software = None
         self.show_step(DesktopSelection)
 
     def show_step(self, step_class):
