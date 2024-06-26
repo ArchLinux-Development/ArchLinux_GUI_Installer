@@ -1,6 +1,6 @@
 from typing import List, Optional
-from archinstall.default_profiles.profile import ProfileType, GreeterType
-from archinstall.default_profiles.xorg import XorgProfile
+from mock_archinstall.default_profiles.profile import ProfileType, GreeterType
+from mock_archinstall.default_profiles.xorg import XorgProfile
 
 class DeepinProfile(XorgProfile):
     def __init__(self):
