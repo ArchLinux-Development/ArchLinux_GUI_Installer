@@ -2,6 +2,14 @@ import tkinter as tk
 from tkinter import ttk
 import psutil
 import subprocess
+
+try:
+    from archinstall.default_profiles.profile import ProfileType, GreeterType
+    from archinstall.default_profiles.xorg import XorgProfile
+except ImportError:
+    from mock_archinstall.default_profiles.profile import ProfileType, GreeterType
+    from mock_archinstall.default_profiles.xorg import XorgProfile
+
 from desktops import (
     PlasmaProfile, GnomeProfile, XfceProfile,
     CinnamonProfile, MateProfile, LxqtProfile,

@@ -1,14 +1,32 @@
 arch_linux_installer/
+├── desktops/
+│   ├── __init__.py
+│   ├── awesome.py
+│   ├── bspwm.py
+│   ├── budgie.py
+│   ├── cinnamon.py
+│   ├── cutefish.py
+│   ├── deepin.py
+│   ├── enlightenment.py
+│   ├── gnome.py
+│   ├── hyprland.py
+│   ├── i3.py
+│   ├── lxqt.py
+│   ├── mate.py
+│   ├── plasma.py
+│   ├── qtile.py
+│   ├── sway.py
+│   └── xfce4.py
+├── mock_archinstall/
+│   ├── __init__.py
+│   ├── default_profiles/
+│   │   ├── __init__.py
+│   │   ├── profile.py
+│   │   ├── xorg.py
 ├── main.py
 └── steps/
-    ├── __init__.py
     ├── desktop_selection.py
-    ├── software_selection.py
     ├── filesystem_selection.py
-    ├── user_account_setup.py
-    ├── hardware_detection.py
-    ├── bootloader_selection.py
+    ├── software_selection.py
     ├── swap_file_configuration.py
-    ├── additional_software.py
-    ├── search_feature.py
-    ├── installation_process.py
+    └── user_account_setup.py
