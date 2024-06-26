@@ -31,5 +31,5 @@ class UserAccountSetup(ttk.Frame):
         password = self.password_entry.get()
         is_admin = self.admin_var.get()
         print(f"Username: {username}, Password: {password}, Admin: {is_admin}")
-        from steps.hardware_detection import HardwareDetection
-        self.parent.show_step(HardwareDetection)
+        from steps.bootloader_selection import BootloaderSelection
+        self.parent.show_step(BootloaderSelection)
