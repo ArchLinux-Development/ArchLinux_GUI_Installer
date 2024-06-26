@@ -10,48 +10,54 @@ class UserAccountSetup(ttk.Frame):
 
     def create_widgets(self):
         label = ttk.Label(self, text="User Account Setup:")
-        label.pack(fill='x', expand=True)
+        label.pack(fill='x', padx=10, pady=5)
 
         # Username entry
-        ttk.Label(self, text="Username:").pack(fill='x', expand=True)
+        ttk.Label(self, text="Username:").pack(fill='x', padx=10, pady=5)
         self.username_entry = ttk.Entry(self)
-        self.username_entry.pack(fill='x', expand=True)
+        self.username_entry.pack(fill='x', padx=10, pady=5)
 
         # Password entry
-        ttk.Label(self, text="Password:").pack(fill='x', expand=True)
+        ttk.Label(self, text="Password:").pack(fill='x', padx=10, pady=5)
         self.password_entry = ttk.Entry(self, show="*")
-        self.password_entry.pack(fill='x', expand=True)
+        self.password_entry.pack(fill='x', padx=10, pady=5)
         self.password_entry.bind("<KeyRelease>", self.check_password_strength)
 
         # Password strength meter
         self.password_strength_var = tk.StringVar()
         self.password_strength_label = ttk.Label(self, textvariable=self.password_strength_var)
-        self.password_strength_label.pack(fill='x', expand=True)
+        self.password_strength_label.pack(fill='x', padx=10, pady=5)
 
         # Password confirmation entry
-        ttk.Label(self, text="Confirm Password:").pack(fill='x', expand=True)
+        ttk.Label(self, text="Confirm Password:").pack(fill='x', padx=10, pady=5)
         self.password_confirm_entry = ttk.Entry(self, show="*")
-        self.password_confirm_entry.pack(fill='x', expand=True)
+        self.password_confirm_entry.pack(fill='x', padx=10, pady=5)
 
         # Admin setup checkbox
         self.admin_var = tk.BooleanVar()
         self.admin_check = ttk.Checkbutton(self, text="Make this user an administrator", variable=self.admin_var, command=self.toggle_admin_password_entry)
-        self.admin_check.pack(fill='x', expand=True)
+        self.admin_check.pack(fill='x', padx=10, pady=5)
 
         # Admin password entry
         self.admin_password_label = ttk.Label(self, text="Root Password:")
         self.admin_password_entry = ttk.Entry(self, show="*")
+        self.admin_password_confirm_label = ttk.Label(self, text="Confirm Root Password:")
+        self.admin_password_confirm_entry = ttk.Entry(self, show="*")
 
         button = ttk.Button(self, text="Next", command=self.next_step)
-        button.pack(fill='x', expand=True)
+        button.pack(fill='x', padx=10, pady=20)
 
     def toggle_admin_password_entry(self):
         if self.admin_var.get():
-            self.admin_password_label.pack(fill='x', expand=True)
-            self.admin_password_entry.pack(fill='x', expand=True)
+            self.admin_password_label.pack(fill='x', padx=10, pady=5)
+            self.admin_password_entry.pack(fill='x', padx=10, pady=5)
+            self.admin_password_confirm_label.pack(fill='x', padx=10, pady=5)
+            self.admin_password_confirm_entry.pack(fill='x', padx=10, pady=5)
         else:
             self.admin_password_label.pack_forget()
             self.admin_password_entry.pack_forget()
+            self.admin_password_confirm_label.pack_forget()
+            self.admin_password_confirm_entry.pack_forget()
 
     def check_password_strength(self, event):
         password = self.password_entry.get()
@@ -85,9 +91,14 @@ class UserAccountSetup(ttk.Frame):
         password_confirm = self.password_confirm_entry.get()
         is_admin = self.admin_var.get()
         admin_password = self.admin_password_entry.get() if is_admin else None
+        admin_password_confirm = self.admin_password_confirm_entry.get() if is_admin else None
 
         if password != password_confirm:
-            tk.messagebox.showerror("Error", "Passwords do not match!")
+            tk.messagebox.showerror("Error", "User passwords do not match!")
+            return
+
+        if is_admin and admin_password != admin_password_confirm:
+            tk.messagebox.showerror("Error", "Root passwords do not match!")
             return
 
         print(f"Username: {username}, Password: {password}, Admin: {is_admin}, Admin Password: {admin_password}")
