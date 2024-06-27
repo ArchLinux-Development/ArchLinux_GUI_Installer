@@ -10,7 +10,7 @@ class SwapFileConfiguration(ttk.Frame):
 
     def create_widgets(self):
         label = ttk.Label(self, text="Swap File Configuration:")
-        label.pack(fill='x', expand=True)
+        label.pack(fill='x', expand=True, padx=10, pady=10)
 
         self.memory = psutil.virtual_memory().total / (1024 ** 3)  # Convert bytes to GB
 
@@ -22,32 +22,30 @@ class SwapFileConfiguration(ttk.Frame):
             "2x RAM": self.memory * 2
         }
 
-        ttk.Label(self, text=f"Detected System Memory: {self.memory:.2f} GB").pack(fill='x', expand=True)
+        ttk.Label(self, text=f"Detected System Memory: {self.memory:.2f} GB").pack(fill='x', expand=True, padx=10)
 
-        ttk.Label(self, text="Swap File Size (GB):").pack(fill='x', expand=True)
+        ttk.Label(self, text="Swap File Size (GB):").pack(fill='x', expand=True, padx=10)
         self.swap_size_var = tk.DoubleVar(value=self.swap_size)
         self.swap_size_entry = ttk.Entry(self, textvariable=self.swap_size_var)
-        self.swap_size_entry.pack(fill='x', expand=True)
+        self.swap_size_entry.pack(fill='x', expand=True, padx=10, pady=5)
 
         self.use_zram_var = tk.BooleanVar()
         self.zram_check = ttk.Checkbutton(self, text="Use ZRAM", variable=self.use_zram_var, command=self.toggle_zram_options)
-        self.zram_check.pack(fill='x', expand=True)
+        self.zram_check.pack(fill='x', expand=True, padx=10, pady=5)
 
         self.zram_size_var = tk.DoubleVar(value=self.zram_size_options["1/2 of RAM"])
         self.zram_size_label = ttk.Label(self, text="ZRAM Size (GB):")
-        self.zram_size_label.pack(fill='x', expand=True)
         self.zram_size_combobox = ttk.Combobox(self, values=list(self.zram_size_options.keys()), state='readonly')
-        self.zram_size_combobox.pack(fill='x', expand=True)
         self.zram_size_combobox.bind("<<ComboboxSelected>>", self.update_zram_size)
         self.zram_size_entry = ttk.Entry(self, textvariable=self.zram_size_var)
-        self.zram_size_entry.pack(fill='x', expand=True)
 
+        # Initially hide ZRAM options
         self.zram_size_label.pack_forget()
         self.zram_size_combobox.pack_forget()
         self.zram_size_entry.pack_forget()
 
         button = ttk.Button(self, text="Next", command=self.next_step)
-        button.pack(fill='x', expand=True)
+        button.pack(fill='x', expand=True, padx=10, pady=10)
 
     def calculate_swap_size(self):
         if self.memory < 2:
@@ -59,9 +57,9 @@ class SwapFileConfiguration(ttk.Frame):
 
     def toggle_zram_options(self):
         if self.use_zram_var.get():
-            self.zram_size_label.pack(fill='x', expand=True)
-            self.zram_size_combobox.pack(fill='x', expand=True)
-            self.zram_size_entry.pack(fill='x', expand=True)
+            self.zram_size_label.pack(fill='x', expand=True, padx=10, pady=5)
+            self.zram_size_combobox.pack(fill='x', expand=True, padx=10, pady=5)
+            self.zram_size_entry.pack(fill='x', expand=True, padx=10, pady=5)
         else:
             self.zram_size_label.pack_forget()
             self.zram_size_combobox.pack_forget()
@@ -77,5 +75,5 @@ class SwapFileConfiguration(ttk.Frame):
         zram_size = self.zram_size_var.get() if use_zram else None
         print(f"Swap Size: {swap_size} GB, Use ZRAM: {use_zram}, ZRAM Size: {zram_size} GB")
 
-        from steps.user_account_setup import UserAccountSetup
-        self.parent.show_step(UserAccountSetup)
+        from steps.bootloader_selection import BootloaderSelection
+        self.parent.show_step(BootloaderSelection)
