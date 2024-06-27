@@ -113,7 +113,7 @@ class UserAccountSetup(ttk.Frame):
         self.password_strength_label.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
         self.admin_var = tk.BooleanVar()
-        self.admin_check = ttk.Checkbutton(user_frame, text="Make this user an administrator", variable=self.admin_var)
+        self.admin_check = ttk.Checkbutton(user_frame, text="Make user a SuperUser", variable=self.admin_var)
         self.admin_check.grid(row=4, columnspan=2, padx=5, pady=5)
 
         ttk.Label(user_frame, text="Root Password:").grid(row=5, column=0, padx=5, pady=5, sticky='e')
@@ -177,6 +177,6 @@ class UserAccountSetup(ttk.Frame):
             messagebox.showerror("Error", "Root password must be at least 8 characters long!")
             return
 
-        print(f"Username: {username}, Password: {password}, Admin: {is_admin}, Admin Password: {admin_password}")
+        print(f"Username: {username}, Password: {password}, SuperUser: {is_admin}, Admin Password: {admin_password}")
         from steps.filesystem_selection import FilesystemSelection
         self.parent.show_step(FilesystemSelection)
