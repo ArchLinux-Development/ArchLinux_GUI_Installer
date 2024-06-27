@@ -66,5 +66,5 @@ By using this software, you agree to these terms and conditions. If you do not a
 
     def next_step(self):
         if self.agree_var.get():
-            from steps.desktop_selection import DesktopSelection
-            self.parent.show_step(DesktopSelection)
+            from steps.user_account_setup import UserAccountSetup
+            self.parent.show_step(UserAccountSetup)
