@@ -1,63 +1,123 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import re
+import psutil
+import subprocess
 
 class UserAccountSetup(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
+        self.hardware_info = self.detect_hardware()
         self.create_widgets()
 
+    def detect_hardware(self):
+        info = {}
+        info['cpu'] = psutil.cpu_count(logical=True)
+        info['memory'] = round(psutil.virtual_memory().total / (1024 ** 3), 2)  # Convert bytes to GB
+
+        try:
+            result = subprocess.run(['lscpu'], capture_output=True, text=True)
+            info['cpu_info'] = self.extract_cpu_model(result.stdout)
+        except Exception as e:
+            info['cpu_info'] = str(e)
+
+        try:
+            result = subprocess.run(['lspci'], capture_output=True, text=True)
+            info['gpu_info'] = self.extract_gpu_models(result.stdout)
+        except Exception as e:
+            info['gpu_info'] = str(e)
+
+        try:
+            result = subprocess.run(['locale'], capture_output=True, text=True)
+            info['locale'] = result.stdout.strip()
+        except Exception as e:
+            info['locale'] = str(e)
+
+        try:
+            result = subprocess.run(['localectl', 'status'], capture_output=True, text=True)
+            info['keyboard_layout'] = self.extract_keyboard_layout(result.stdout)
+        except Exception as e:
+            info['keyboard_layout'] = str(e)
+
+        try:
+            result = subprocess.run(['dmidecode', '-s', 'system-product-name'], capture_output=True, text=True)
+            info['virtualization'] = self.detect_virtualization(result.stdout)
+        except Exception as e:
+            info['virtualization'] = str(e)
+
+        return info
+
+    def extract_cpu_model(self, lscpu_output):
+        for line in lscpu_output.split('\n'):
+            if 'Model name' in line:
+                return line.split(':')[1].strip()
+        return "Unknown CPU"
+
+    def extract_gpu_models(self, lspci_output):
+        gpus = []
+        for line in lspci_output.split('\n'):
+            if 'VGA compatible controller' in line or '3D controller' in line:
+                gpus.append(line.split(': ')[2].strip())
+        return gpus
+
+    def extract_keyboard_layout(self, localectl_output):
+        for line in localectl_output.split('\n'):
+            if 'Layout' in line:
+                return line.split(': ')[1].strip()
+        return "Unknown Layout"
+
+    def detect_virtualization(self, dmidecode_output):
+        if 'VirtualBox' in dmidecode_output:
+            return 'VirtualBox'
+        else:
+            return 'Physical Machine'
+
     def create_widgets(self):
-        label = ttk.Label(self, text="User Account Setup:")
+        label = ttk.Label(self, text="Hardware Information")
         label.pack(fill='x', padx=10, pady=5)
 
-        # Username entry
-        ttk.Label(self, text="Username:").pack(fill='x', padx=10, pady=5)
-        self.username_entry = ttk.Entry(self)
-        self.username_entry.pack(fill='x', padx=10, pady=5)
+        # Display hardware information
+        hw_info_frame = ttk.Frame(self)
+        hw_info_frame.pack(fill='x', padx=10, pady=5)
+        for key, value in self.hardware_info.items():
+            ttk.Label(hw_info_frame, text=f"{key}: {value}").pack(fill='x', padx=10, pady=2)
+        ttk.Label(hw_info_frame, text=f"GPU(s): {', '.join(self.hardware_info['gpu_info'])}").pack(fill='x', padx=10, pady=2)
 
-        # Password entry
-        ttk.Label(self, text="Password:").pack(fill='x', padx=10, pady=5)
-        self.password_entry = ttk.Entry(self, show="*")
-        self.password_entry.pack(fill='x', padx=10, pady=5)
+        user_frame = ttk.Frame(self)
+        user_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        ttk.Label(user_frame, text="Username:").grid(row=0, column=0, padx=5, pady=5, sticky='e')
+        self.username_entry = ttk.Entry(user_frame)
+        self.username_entry.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+
+        ttk.Label(user_frame, text="Password:").grid(row=1, column=0, padx=5, pady=5, sticky='e')
+        self.password_entry = ttk.Entry(user_frame, show="*")
+        self.password_entry.grid(row=1, column=1, padx=5, pady=5, sticky='w')
         self.password_entry.bind("<KeyRelease>", self.check_password_strength)
 
-        # Password strength meter
+        ttk.Label(user_frame, text="Confirm Password:").grid(row=2, column=0, padx=5, pady=5, sticky='e')
+        self.password_confirm_entry = ttk.Entry(user_frame, show="*")
+        self.password_confirm_entry.grid(row=2, column=1, padx=5, pady=5, sticky='w')
+
         self.password_strength_var = tk.StringVar()
-        self.password_strength_label = ttk.Label(self, textvariable=self.password_strength_var)
-        self.password_strength_label.pack(fill='x', padx=10, pady=5)
+        self.password_strength_label = ttk.Label(user_frame, textvariable=self.password_strength_var)
+        self.password_strength_label.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
-        # Password confirmation entry
-        ttk.Label(self, text="Confirm Password:").pack(fill='x', padx=10, pady=5)
-        self.password_confirm_entry = ttk.Entry(self, show="*")
-        self.password_confirm_entry.pack(fill='x', padx=10, pady=5)
-
-        # Admin setup checkbox
         self.admin_var = tk.BooleanVar()
-        self.admin_check = ttk.Checkbutton(self, text="Make this user an administrator", variable=self.admin_var, command=self.toggle_admin_password_entry)
-        self.admin_check.pack(fill='x', padx=10, pady=5)
+        self.admin_check = ttk.Checkbutton(user_frame, text="Make this user an administrator", variable=self.admin_var)
+        self.admin_check.grid(row=4, columnspan=2, padx=5, pady=5)
 
-        # Admin password entry
-        self.admin_password_label = ttk.Label(self, text="Root Password:")
-        self.admin_password_entry = ttk.Entry(self, show="*")
-        self.admin_password_confirm_label = ttk.Label(self, text="Confirm Root Password:")
-        self.admin_password_confirm_entry = ttk.Entry(self, show="*")
+        ttk.Label(user_frame, text="Root Password:").grid(row=5, column=0, padx=5, pady=5, sticky='e')
+        self.admin_password_entry = ttk.Entry(user_frame, show="*")
+        self.admin_password_entry.grid(row=5, column=1, padx=5, pady=5, sticky='w')
+
+        ttk.Label(user_frame, text="Confirm Root Password:").grid(row=6, column=0, padx=5, pady=5, sticky='e')
+        self.admin_password_confirm_entry = ttk.Entry(user_frame, show="*")
+        self.admin_password_confirm_entry.grid(row=6, column=1, padx=5, pady=5, sticky='w')
 
         button = ttk.Button(self, text="Next", command=self.next_step)
         button.pack(fill='x', padx=10, pady=20)
-
-    def toggle_admin_password_entry(self):
-        if self.admin_var.get():
-            self.admin_password_label.pack(fill='x', padx=10, pady=5)
-            self.admin_password_entry.pack(fill='x', padx=10, pady=5)
-            self.admin_password_confirm_label.pack(fill='x', padx=10, pady=5)
-            self.admin_password_confirm_entry.pack(fill='x', padx=10, pady=5)
-        else:
-            self.admin_password_label.pack_forget()
-            self.admin_password_entry.pack_forget()
-            self.admin_password_confirm_label.pack_forget()
-            self.admin_password_confirm_entry.pack_forget()
 
     def check_password_strength(self, event):
         password = self.password_entry.get()
@@ -65,8 +125,8 @@ class UserAccountSetup(ttk.Frame):
         self.password_strength_var.set(f"Password strength: {strength}")
 
     def calculate_password_strength(self, password):
-        if len(password) < 6:
-            return "Weak"
+        if len(password) < 8:
+            return "Too short"
         strength = 0
         if len(password) >= 8:
             strength += 1
@@ -90,17 +150,25 @@ class UserAccountSetup(ttk.Frame):
         password = self.password_entry.get()
         password_confirm = self.password_confirm_entry.get()
         is_admin = self.admin_var.get()
-        admin_password = self.admin_password_entry.get() if is_admin else None
-        admin_password_confirm = self.admin_password_confirm_entry.get() if is_admin else None
+        admin_password = self.admin_password_entry.get()
+        admin_password_confirm = self.admin_password_confirm_entry.get()
 
         if password != password_confirm:
-            tk.messagebox.showerror("Error", "User passwords do not match!")
+            messagebox.showerror("Error", "User passwords do not match!")
             return
 
-        if is_admin and admin_password != admin_password_confirm:
-            tk.messagebox.showerror("Error", "Root passwords do not match!")
+        if admin_password != admin_password_confirm:
+            messagebox.showerror("Error", "Root passwords do not match!")
+            return
+
+        if len(password) < 8:
+            messagebox.showerror("Error", "User password must be at least 8 characters long!")
+            return
+
+        if len(admin_password) < 8:
+            messagebox.showerror("Error", "Root password must be at least 8 characters long!")
             return
 
         print(f"Username: {username}, Password: {password}, Admin: {is_admin}, Admin Password: {admin_password}")
-        from steps.bootloader_selection import BootloaderSelection
-        self.parent.show_step(BootloaderSelection)
+        from steps.filesystem_selection import FilesystemSelection
+        self.parent.show_step(FilesystemSelection)
