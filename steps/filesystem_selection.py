@@ -22,5 +22,5 @@ class FilesystemSelection(ttk.Frame):
     def next_step(self):
         selected_fs = self.fs_listbox.get(self.fs_listbox.curselection())
         print(f"Selected Filesystem: {selected_fs}")
-        from steps.user_account_setup import UserAccountSetup
-        self.parent.show_step(UserAccountSetup)
+        from steps.swap_file_configuration import SwapFileConfiguration
+        self.parent.show_step(SwapFileConfiguration)
