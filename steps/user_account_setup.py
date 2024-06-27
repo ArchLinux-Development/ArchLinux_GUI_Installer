@@ -23,7 +23,7 @@ class UserAccountSetup(ttk.Frame):
             info['cpu_info'] = str(e)
 
         try:
-            result = subprocess.run(['lspci'], capture_output=True, text=True)
+            result = subprocess.run(['lspci', '-mm'], capture_output=True, text=True)
             info['gpu_info'] = self.extract_gpu_models(result.stdout)
         except Exception as e:
             info['gpu_info'] = str(e)
@@ -58,7 +58,11 @@ class UserAccountSetup(ttk.Frame):
         gpus = []
         for line in lspci_output.split('\n'):
             if 'VGA compatible controller' in line or '3D controller' in line:
-                gpus.append(line.split(': ')[2].strip())
+                parts = line.split('"')
+                if len(parts) > 3:
+                    gpus.append(parts[3])
+                else:
+                    gpus.append(parts[1])
         return ', '.join(gpus) if gpus else "Unknown GPU"
 
     def extract_keyboard_layout(self, localectl_output):
