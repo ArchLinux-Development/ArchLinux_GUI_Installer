@@ -19,14 +19,20 @@ arch_linux_installer/
 │   └── xfce4.py
 ├── mock_archinstall/
 │   ├── __init__.py
-│   ├── default_profiles/
-│   │   ├── __init__.py
-│   │   ├── profile.py
-│   │   ├── xorg.py
+│   └── default_profiles/
+│       ├── __init__.py
+│       ├── profile.py
+│       └── xorg.py
 ├── main.py
 └── steps/
+    ├── __init__py
+    ├── additional_software.py
+    ├── bootloader_selection.py
     ├── desktop_selection.py
+    ├── disclaimer.py
     ├── filesystem_selection.py
+    ├── installation_process.py
+    ├── search_feature.py
     ├── software_selection.py
     ├── swap_file_configuration.py
     └── user_account_setup.py
