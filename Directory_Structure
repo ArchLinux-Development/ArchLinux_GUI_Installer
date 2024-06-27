@@ -17,6 +17,12 @@ arch_linux_installer/
 │   ├── qtile.py
 │   ├── sway.py
 │   └── xfce4.py
+├── icons/
+│   ├── btrfs.png
+│   ├── zfs.png
+│   ├── ext4.png
+│   ├── xfs.png
+│   └── f2fs.png
 ├── mock_archinstall/
 │   ├── __init__.py
 │   └── default_profiles/
@@ -25,7 +31,7 @@ arch_linux_installer/
 │       └── xorg.py
 ├── main.py
 └── steps/
-    ├── __init__py
+    ├── __init__.py
     ├── additional_software.py
     ├── bootloader_selection.py
     ├── desktop_selection.py
