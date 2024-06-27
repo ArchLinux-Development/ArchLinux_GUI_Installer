@@ -118,7 +118,7 @@ class UserAccountSetup(ttk.Frame):
 
         self.admin_var = tk.BooleanVar()
         self.admin_check = ttk.Checkbutton(user_frame, text="Make user a SuperUser", variable=self.admin_var)
-        self.admin_check.grid(row=4, columnspan=2, padx=5, pady=5)
+        self.admin_check.grid(row=4, column=1, padx=5, pady=5, sticky='w')
 
         ttk.Label(user_frame, text="Root Password:").grid(row=5, column=0, padx=5, pady=5, sticky='e')
         self.admin_password_entry = ttk.Entry(user_frame, show="*")
