@@ -27,7 +27,7 @@ class ArchLinuxInstaller(tk.Tk):
         self.hardware_info = self.detect_hardware()
         self.selected_desktop = None
         self.selected_software = None
-        self.show_step(DesktopSelection)
+        self.show_step(Disclaimer)
 
     def show_step(self, step_class):
         if self.current_step:
@@ -97,6 +97,6 @@ class ArchLinuxInstaller(tk.Tk):
             return 'Physical Machine'
 
 if __name__ == "__main__":
-    from steps.desktop_selection import DesktopSelection
+    from steps.disclaimer import Disclaimer
     app = ArchLinuxInstaller()
     app.mainloop()
