@@ -40,7 +40,7 @@ By using this software, you agree to these terms and conditions. If you do not a
         self.text_box.bind("<ButtonRelease-1>", self.check_scroll)
 
         self.agree_var = tk.BooleanVar()
-        self.agree_check = ttk.Checkbutton(self, text="I have read and agree to the disclaimer", variable=self.agree_var, state=tk.DISABLED)
+        self.agree_check = ttk.Checkbutton(self, text="I have read and agree to the disclaimer", variable=self.agree_var, state=tk.DISABLED, command=self.show_next_button)
         self.agree_check.pack(fill='x', padx=10, pady=5)
 
         self.next_button = ttk.Button(self, text="Next", command=self.next_step)
@@ -57,9 +57,12 @@ By using this software, you agree to these terms and conditions. If you do not a
             self.parent.after(1000, self.enable_checkbox)
 
     def check_scroll(self, event):
-        if self.text_box.yview()[1] == 1.0 and self.agree_var.get():  # User has scrolled to the bottom and agreed
+        if self.text_box.yview()[1] == 1.0:  # User has scrolled to the bottom
+            self.enable_checkbox()  # Enable the checkbox if 5 seconds have passed
+
+    def show_next_button(self):
+        if self.agree_var.get():
             self.next_button.pack(fill='x', padx=10, pady=5)  # Show the next button
-            self.agree_check.config(state=tk.NORMAL)
 
     def next_step(self):
         if self.agree_var.get():
