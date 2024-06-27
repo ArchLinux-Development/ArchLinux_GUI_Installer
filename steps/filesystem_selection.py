@@ -50,7 +50,7 @@ class FilesystemSelection(ttk.Frame):
     def load_icon(self, icon_path):
         icon_full_path = os.path.join("icons", icon_path)
         image = Image.open(icon_full_path)
-        image = image.resize((32, 32), Image.ANTIALIAS)
+        image = image.resize((32, 32), Image.LANCZOS)  # Updated to use Image.LANCZOS
         return ImageTk.PhotoImage(image)
 
     def next_step(self):
