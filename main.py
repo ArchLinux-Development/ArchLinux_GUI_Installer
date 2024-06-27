@@ -20,8 +20,8 @@ class ArchLinuxInstaller(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Arch Linux GUI Installer")
-        self.geometry("800x600")
-        self.minsize(800, 600)
+        self.geometry("800x815")
+        self.minsize(800, 700)
         self.current_step = None
         self.selected_desktop = None
         self.selected_software = None
