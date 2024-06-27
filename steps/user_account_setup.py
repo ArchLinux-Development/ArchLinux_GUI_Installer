@@ -99,26 +99,26 @@ class UserAccountSetup(ttk.Frame):
         user_frame = ttk.Frame(self)
         user_frame.pack(fill='both', expand=True, padx=10, pady=10)
 
-        ttk.Label(user_frame, text="Username:").grid(row=0, column=0, padx=5, pady=5, sticky='e')
-        self.username_entry = ttk.Entry(user_frame)
-        self.username_entry.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        self.admin_var = tk.BooleanVar()
+        self.admin_check = ttk.Checkbutton(user_frame, text="Make user a SuperUser", variable=self.admin_var)
+        self.admin_check.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky='w')
 
-        ttk.Label(user_frame, text="Password:").grid(row=1, column=0, padx=5, pady=5, sticky='e')
+        ttk.Label(user_frame, text="Username:").grid(row=1, column=0, padx=5, pady=5, sticky='e')
+        self.username_entry = ttk.Entry(user_frame)
+        self.username_entry.grid(row=1, column=1, padx=5, pady=5, sticky='w')
+
+        ttk.Label(user_frame, text="Password:").grid(row=2, column=0, padx=5, pady=5, sticky='e')
         self.password_entry = ttk.Entry(user_frame, show="*")
-        self.password_entry.grid(row=1, column=1, padx=5, pady=5, sticky='w')
+        self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky='w')
         self.password_entry.bind("<KeyRelease>", self.check_password_strength)
 
-        ttk.Label(user_frame, text="Confirm Password:").grid(row=2, column=0, padx=5, pady=5, sticky='e')
+        ttk.Label(user_frame, text="Confirm Password:").grid(row=3, column=0, padx=5, pady=5, sticky='e')
         self.password_confirm_entry = ttk.Entry(user_frame, show="*")
-        self.password_confirm_entry.grid(row=2, column=1, padx=5, pady=5, sticky='w')
+        self.password_confirm_entry.grid(row=3, column=1, padx=5, pady=5, sticky='w')
 
         self.password_strength_var = tk.StringVar()
         self.password_strength_label = ttk.Label(user_frame, textvariable=self.password_strength_var)
-        self.password_strength_label.grid(row=3, column=1, padx=5, pady=5, sticky='w')
-
-        self.admin_var = tk.BooleanVar()
-        self.admin_check = ttk.Checkbutton(user_frame, text="Make user a SuperUser", variable=self.admin_var)
-        self.admin_check.grid(row=4, column=1, padx=5, pady=5, sticky='w')
+        self.password_strength_label.grid(row=4, column=1, padx=5, pady=5, sticky='w')
 
         ttk.Label(user_frame, text="Root Password:").grid(row=5, column=0, padx=5, pady=5, sticky='e')
         self.admin_password_entry = ttk.Entry(user_frame, show="*")
