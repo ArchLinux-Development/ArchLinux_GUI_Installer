@@ -40,19 +40,16 @@ class FilesystemSelection(ttk.Frame):
         icon = self.load_icon(icon_path)
         icon_label = ttk.Label(frame, image=icon)
         icon_label.image = icon  # Keep a reference to avoid garbage collection
-        icon_label.pack(side='left', padx=5, pady=5)
+        icon_label.grid(row=0, column=0, rowspan=2, padx=5, pady=5)
 
-        info_frame = ttk.Frame(frame)
-        info_frame.pack(side='left', fill='x', expand=True, padx=5, pady=5)
+        label = ttk.Label(frame, text=name)
+        label.grid(row=0, column=1, sticky='w')
 
-        label = ttk.Label(info_frame, text=name)
-        label.pack(anchor='w')
-
-        description_label = ttk.Label(info_frame, text=description, wraplength=400, justify='left')
-        description_label.pack(anchor='w')
+        description_label = ttk.Label(frame, text=description, wraplength=400, justify='left')
+        description_label.grid(row=1, column=1, sticky='w')
 
         radio = ttk.Radiobutton(frame, variable=self.selected_fs, value=name)
-        radio.pack(side='right', padx=5, pady=5)
+        radio.grid(row=0, column=2, rowspan=2, padx=5, pady=5)
 
     def load_icon(self, icon_path):
         icon_full_path = os.path.join("icons", icon_path)
