@@ -59,7 +59,7 @@ class UserAccountSetup(ttk.Frame):
         for line in lspci_output.split('\n'):
             if 'VGA compatible controller' in line or '3D controller' in line:
                 gpus.append(line.split(': ')[2].strip())
-        return gpus
+        return ', '.join(gpus) if gpus else "Unknown GPU"
 
     def extract_keyboard_layout(self, localectl_output):
         for line in localectl_output.split('\n'):
@@ -74,6 +74,8 @@ class UserAccountSetup(ttk.Frame):
             return 'Physical Machine'
 
     def create_widgets(self):
+        self.pack(fill='both', expand=True, padx=10, pady=10)
+
         label = ttk.Label(self, text="Hardware Information")
         label.pack(fill='x', padx=10, pady=5)
 
@@ -82,7 +84,13 @@ class UserAccountSetup(ttk.Frame):
         hw_info_frame.pack(fill='x', padx=10, pady=5)
         for key, value in self.hardware_info.items():
             ttk.Label(hw_info_frame, text=f"{key}: {value}").pack(fill='x', padx=10, pady=2)
-        ttk.Label(hw_info_frame, text=f"GPU(s): {', '.join(self.hardware_info['gpu_info'])}").pack(fill='x', padx=10, pady=2)
+        ttk.Label(hw_info_frame, text=f"GPU(s): {self.hardware_info['gpu_info']}").pack(fill='x', padx=10, pady=2)
+
+        separator = ttk.Separator(self, orient='horizontal')
+        separator.pack(fill='x', pady=10)
+
+        label = ttk.Label(self, text="User Account Setup")
+        label.pack(fill='x', padx=10, pady=5)
 
         user_frame = ttk.Frame(self)
         user_frame.pack(fill='both', expand=True, padx=10, pady=10)
