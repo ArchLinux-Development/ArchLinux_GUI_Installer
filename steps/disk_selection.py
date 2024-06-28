@@ -34,13 +34,13 @@ class DiskSelection(ttk.Frame):
         self.scrollbar.pack(side="bottom", fill="x")
         self.tree.pack(fill='both', expand=True)
 
-        for disk in self.disks:
-            partitions_info = ', '.join([f"{p['mountpoint']} ({p['fstype']})" for p in self.disks[disk]["partitions"]])
+        for disk, info in self.disks.items():
+            partitions_info = ', '.join([f"{p['mountpoint']} ({p['fstype']})" for p in info["partitions"]])
             self.tree.insert("", "end", values=(
                 disk,
-                f"{self.disks[disk]['total']:.2f}",
-                f"{self.disks[disk]['used']:.2f}",
-                f"{self.disks[disk]['free']:.2f}",
+                f"{info['total']:.2f}",
+                f"{info['used']:.2f}",
+                f"{info['free']:.2f}",
                 partitions_info
             ))
 
@@ -54,14 +54,18 @@ class DiskSelection(ttk.Frame):
         disks = {}
         partitions = psutil.disk_partitions(all=False)
         for partition in partitions:
-            device = partition.device.split('p')[0]  # Handles /dev/sda1, /dev/sda2, etc.
+            device = partition.device.split('p')[0] if 'p' in partition.device else partition.device.rstrip('0123456789')
             if device not in disks:
                 disks[device] = {
                     "partitions": [],
-                    "total": psutil.disk_usage(partition.mountpoint).total / (1024 ** 3),
-                    "used": psutil.disk_usage(partition.mountpoint).used / (1024 ** 3),
-                    "free": psutil.disk_usage(partition.mountpoint).free / (1024 ** 3)
+                    "total": 0,
+                    "used": 0,
+                    "free": 0
                 }
+            usage = psutil.disk_usage(partition.mountpoint)
+            disks[device]["total"] += usage.total / (1024 ** 3)
+            disks[device]["used"] += usage.used / (1024 ** 3)
+            disks[device]["free"] += usage.free / (1024 ** 3)
             disks[device]["partitions"].append({
                 "mountpoint": partition.mountpoint,
                 "fstype": partition.fstype
