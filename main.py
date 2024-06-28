@@ -35,5 +35,12 @@ class ArchLinuxInstaller(tk.Tk):
 
 if __name__ == "__main__":
     from steps.disclaimer import Disclaimer
+    from steps.user_account_setup import UserAccountSetup
+    from steps.disk_selection import DiskSelection
+    from steps.filesystem_selection import FilesystemSelection
+    from steps.swap_file_configuration import SwapFileConfiguration
+    from steps.bootloader_selection import BootloaderSelection
+
     app = ArchLinuxInstaller()
+    app.show_step(Disclaimer)
     app.mainloop()
