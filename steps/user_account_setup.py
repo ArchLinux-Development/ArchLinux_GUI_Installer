@@ -182,5 +182,5 @@ class UserAccountSetup(ttk.Frame):
             return
 
         print(f"Username: {username}, Password: {password}, SuperUser: {is_admin}, Admin Password: {admin_password}")
-        from steps.filesystem_selection import FilesystemSelection
-        self.parent.show_step(FilesystemSelection)
+        from steps.disk_selection import DiskSelection
+        self.parent.show_step(DiskSelection)
