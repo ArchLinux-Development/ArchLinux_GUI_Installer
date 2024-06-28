@@ -13,7 +13,10 @@ class DiskSelection(ttk.Frame):
         label = ttk.Label(self, text="Select Disk:")
         label.pack(fill='x', expand=True, padx=10, pady=10)
 
-        self.tree = ttk.Treeview(self, columns=("Device", "Total", "Used", "Free", "Partitions"), show="headings")
+        container = ttk.Frame(self)
+        container.pack(fill='both', expand=True, padx=10, pady=10)
+
+        self.tree = ttk.Treeview(container, columns=("Device", "Total", "Used", "Free", "Partitions"), show="headings")
         self.tree.heading("Device", text="Device")
         self.tree.heading("Total", text="Total (GB)")
         self.tree.heading("Used", text="Used (GB)")
@@ -26,6 +29,11 @@ class DiskSelection(ttk.Frame):
         self.tree.column("Free", anchor='center', width=100)
         self.tree.column("Partitions", anchor='w', width=300)
 
+        self.scrollbar = ttk.Scrollbar(container, orient="horizontal", command=self.tree.xview)
+        self.tree.configure(xscrollcommand=self.scrollbar.set)
+        self.scrollbar.pack(side="bottom", fill="x")
+        self.tree.pack(fill='both', expand=True)
+
         for disk in self.disks:
             partitions_info = ', '.join([f"{p['mountpoint']} ({p['fstype']})" for p in self.disks[disk]["partitions"]])
             self.tree.insert("", "end", values=(
@@ -36,7 +44,6 @@ class DiskSelection(ttk.Frame):
                 partitions_info
             ))
 
-        self.tree.pack(fill='both', expand=True, padx=10, pady=10)
         self.tree.bind("<ButtonRelease-1>", self.on_item_selected)
 
         self.selected_disk = None
