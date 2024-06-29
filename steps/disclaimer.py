@@ -51,10 +51,11 @@ By using this software, you agree to these terms and conditions. If you do not a
 
     def enable_checkbox(self):
         elapsed_time = time.time() - self.start_time
-        if elapsed_time >= 5 and self.text_box.yview()[1] == 1.0:  # Wait for 5 seconds and scrolling to bottom
-            self.agree_check.config(state=tk.NORMAL)
-        else:
-            self.parent.after(1000, self.enable_checkbox)
+        if self.text_box.winfo_exists():
+            if elapsed_time >= 5 and self.text_box.yview()[1] == 1.0:  # Wait for 5 seconds and scrolling to bottom
+                self.agree_check.config(state=tk.NORMAL)
+            else:
+                self.parent.after(1000, self.enable_checkbox)
 
     def check_scroll(self, event):
         if self.text_box.yview()[1] == 1.0:  # User has scrolled to the bottom
