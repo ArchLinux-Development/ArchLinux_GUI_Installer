@@ -68,3 +68,9 @@ By using this software, you agree to these terms and conditions. If you do not a
         if self.agree_var.get():
             from steps.user_account_setup import UserAccountSetup
             self.parent.show_step(UserAccountSetup)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("Disclaimer Example")
+    Disclaimer(root).pack(fill='both', expand=True)
+    root.mainloop()
