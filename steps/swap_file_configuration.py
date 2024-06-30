@@ -37,6 +37,7 @@ class SwapFileConfiguration(ttk.Frame):
         self.zram_check.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
 
         self.zram_size_label = ttk.Label(frame, text="ZRAM Size:")
+        self.zram_size_var = tk.DoubleVar(value=self.zram_size_options["1/2 of RAM"])  # Initialize zram_size_var
         self.zram_size_combobox = ttk.Combobox(frame, values=list(self.zram_size_options.keys()), state='readonly')
         self.zram_size_combobox.current(0)  # Set default selection
         self.zram_size_combobox.bind("<<ComboboxSelected>>", self.update_zram_size)
@@ -66,12 +67,12 @@ class SwapFileConfiguration(ttk.Frame):
 
     def update_zram_size(self, event):
         selected_option = self.zram_size_combobox.get()
-        self.zram_size_var = self.zram_size_options[selected_option]
+        self.zram_size_var.set(self.zram_size_options[selected_option])
 
     def next_step(self):
         swap_size = self.swap_size_var.get()
         use_zram = self.use_zram_var.get()
-        zram_size = self.zram_size_var if use_zram else None
+        zram_size = self.zram_size_var.get() if use_zram else None
         print(f"Swap Size: {swap_size} GB, Use ZRAM: {use_zram}, ZRAM Size: {zram_size} GB")
 
         from steps.bootloader_selection import BootloaderSelection
